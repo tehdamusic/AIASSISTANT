@@ -1,0 +1,152 @@
+# ADHD Assistant API - Startup Guide
+
+This guide will help you set up and run your ADHD Assistant API, including how to test it using Postman or cURL.
+
+## Setup Instructions
+
+### 1. Environment Setup
+
+First, clone the repository and set up a virtual environment:
+
+```bash
+# Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### 2. Install Dependencies
+
+Install all required packages using pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure Environment Variables
+
+Copy the `.env.example` file to create your `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+Edit the `.env` file to add your API keys and configuration:
+- MongoDB connection string
+- OpenAI API key
+- Google OAuth credentials
+- Plaid API keys (if using)
+- Encryption keys
+
+### 4. Start the Server
+
+Run the FastAPI server using Uvicorn:
+
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+The server will start at `http://localhost:8000`. The `--reload` flag enables automatic reloading when code changes are detected, which is helpful during development.
+
+## API Testing Guide
+
+### Using Swagger UI
+
+FastAPI automatically generates interactive API documentation:
+
+1. Open your browser and navigate to `http://localhost:8000/docs`
+2. You'll see all available endpoints organized by tags
+3. Click on any endpoint to expand it
+4. Click "Try it out" to test the endpoint directly in the browser
+
+### Using Postman
+
+Postman provides a GUI for testing API endpoints:
+
+1. Download and install [Postman](https://www.postman.com/downloads/)
+2. Create a new collection for "ADHD Assistant API"
+3. Add requests for each endpoint you want to test
+
+#### Example: Creating a Task
+
+1. Create a new POST request to `http://localhost:8000/tasks/`
+2. Set the Content-Type header to `application/json`
+3. In the body tab, select "raw" and "JSON", then enter:
+   ```json
+   {
+     "user_id": "your-user-id",
+     "title": "Complete project documentation",
+     "priority": "high",
+     "due_date": "2023-12-15T16:00:00"
+   }
+   ```
+4. Click "Send" to create the task
+
+#### Example: Getting Tasks for a User
+
+1. Create a new GET request to `http://localhost:8000/tasks/{user_id}`
+2. Replace `{user_id}` with the actual user ID
+3. Click "Send" to retrieve the user's tasks
+
+### Using cURL
+
+You can also test the API with cURL commands from the terminal:
+
+#### Create a Task
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/tasks/' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "user_id": "your-user-id",
+  "title": "Complete project documentation",
+  "priority": "high",
+  "due_date": "2023-12-15T16:00:00"
+}'
+```
+
+#### Get Tasks
+
+```bash
+curl -X 'GET' 'http://localhost:8000/tasks/your-user-id'
+```
+
+#### Generate AI Response
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/chat' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "message": "What tasks do I have today?",
+  "user_id": "your-user-id"
+}'
+```
+
+#### Set a Budget
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/finance/budget' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "user_id": "your-user-id",
+  "month": "2023-12",
+  "total_budget": 3000,
+  "categories": [
+    {"category": "Groceries", "amount": 500},
+    {"category": "Restaurants", "amount": 300},
+    {"category": "Entertainment", "amount": 200},
+    {"category": "Utilities", "amount": 400}
+  ]
+}'
+```
+
+## Next Steps
+
+After successfully setting up and testing your API, you can:
+
+1. Connect to MongoDB Atlas for cloud-based storage
+2. Set up authentication for API security
+3. Deploy the API to a cloud provider (AWS, Google Cloud, Heroku, etc.)
+4. Develop a frontend application that interacts with your API
